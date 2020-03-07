@@ -13,15 +13,17 @@ C = 8.76741e-8
 
 R_FIXED = 1000
 VCC = 3.3
--- The ADC is not very linear, but we are only interested
--- in a narrow temperature range, so we punch in the 
--- value here that will make things work for our range
-RES = 1119 -- Observed value, should be 1023
+
+-- The ADC is not nicely linear over 0-3.3V (as in that it emits 0-1023) but
+-- has an offset and therefore a bit of a slope. Linear regression of measured
+-- values resulted in these coefficients.
+ADC_OFFSET = -36.05242032
+ADC_SLOPE = 3.029617953
 
 -- Shameless copied from https://www.electronicwings.com/nodemcu/thermistor-interfacing-with-nodemcu
 function ln(x)      --natural logarithm function for x>0 real values
     local y = (x-1)/(x+1)
-    local sum = 1 
+    local sum = 1
     local val = 1
     if(x == nil) then
         return 0
@@ -36,7 +38,7 @@ function ln(x)      --natural logarithm function for x>0 real values
 end
 
 function mv_to_c(adc_value)
-  dv_r = adc_value * VCC / RES
+  dv_r = ADC_OFFSET + (adc_value * ADC_SLOPE)
   print("adc_value: ", adc_value)
   print("dv_r: ", dv_r)
   -- Sue me. I'm bad at electronics
@@ -56,4 +58,4 @@ mqtt:connect("192.168.1.168", 1883, 0, function(client)
     client:publish("/dtv/silvia/temperature", temp, 0, 0)
   end)
   looper:start()
-end) 
+end)
