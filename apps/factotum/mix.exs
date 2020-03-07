@@ -36,7 +36,9 @@ defmodule Factotum.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix_pubsub, "~> 2.0"}]
+      {:phoenix_pubsub, github: "phoenixframework/phoenix_pubsub"},
+      {:creep, in_umbrella: true}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

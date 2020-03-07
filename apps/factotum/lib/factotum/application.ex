@@ -6,12 +6,16 @@ defmodule Factotum.Application do
   use Application
 
   def start(_type, _args) do
+    broker_opts = [
+      broker_id: "factotum",
+      packet_processor: Creep.InMemProcessor,
+      transports: [
+        {Creep.RanchTransport, [port: 1883]}]]
+
     children = [
       # Start the PubSub system
-      {Phoenix.PubSub, name: Factotum.PubSub}
-      # Start a worker by calling: Factotum.Worker.start_link(arg)
-      # {Factotum.Worker, arg}
-    ]
+      {Phoenix.PubSub, name: Factotum.PubSub},
+      {Creep, broker_opts}]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Factotum.Supervisor)
   end
