@@ -15,7 +15,8 @@ defmodule Factotum.Application do
     children = [
       # Start the PubSub system
       {Phoenix.PubSub, name: Factotum.PubSub},
-      {Creep, broker_opts}]
+      {Creep, broker_opts},
+      Factotum.AvahiPublisher]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Factotum.Supervisor)
   end
