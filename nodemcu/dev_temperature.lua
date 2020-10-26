@@ -53,7 +53,7 @@ end
 mqtt:connect("192.168.1.168", 1883, 0, function(client)
   looper = tmr.create()
   looper:register(3000, tmr.ALARM_AUTO, function()
-    temp = mv_to_c(adc.read(0))
+    temp = mv_to_c(adc.read(0)) -- TODO average a bunch of reads
     print(string.format("Temp: %0.3g °C", temp))
     client:publish("/dtv/silvia/temperature", temp, 0, 0)
   end)
